@@ -1,0 +1,25 @@
+---
+deployment:
+  tasks:
+    # Target document root for the subdomain
+    - export DEPLOYPATH="/home/act/public_html/recruitiq.automatedconetruck.com.au"
+
+    # Sanity: make sure target exists
+    - mkdir -p "$DEPLOYPATH"
+
+    # Sync repo → webroot (clean, no VCS/build clutter)
+    - /bin/rsync -av --delete \
+        --exclude ".git" \
+        --exclude ".github" \
+        --exclude ".cpanel.yml" \
+        --exclude "docker/" \
+        --exclude "install/" \
+        --exclude "node_modules/" \
+        ./ "$DEPLOYPATH"/
+
+    # (Optional) If this is PHP/Laravel, uncomment:
+    # - /usr/local/bin/php -d detect_unicode=0 "$DEPLOYPATH/artisan" config:clear || true
+    # - /usr/local/bin/php "$DEPLOYPATH/artisan" optimize || true
+
+    # (Optional) If you build assets on the server, uncomment (requires Node):
+    # - cd "$DEPLOYPATH" && /usr/local/bin/npm ci && /usr/local/bin/npm run build

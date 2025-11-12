@@ -1,0 +1,29 @@
+name: Build & Deploy to cPanel
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy via SSH to cPanel
+        uses: appleboy/ssh-action@master
+        with:
+          host: 65.254.93.21
+          username: act
+          password: blaze4321!
+          script: |
+            cd /home/act/repositories/kpireqruit
+            git pull origin main
+            npm ci --omit=dev
+            npm run build
+            php artisan migrate --force

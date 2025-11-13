@@ -7,19 +7,18 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@master
+      - name: Deploy via SSH (key auth)
+        uses: appleboy/ssh-action@v0.1.10
         with:
-          host: 65.254.93.21
-          username: act
-          password: blaze4321!
+          host: ${{ secrets.CPANEL_SSH_HOST }}
+          username: ${{ secrets.CPANEL_SSH_USER }}
+          key: ${{ secrets.CPANEL_SSH_KEY }}
+          port: ${{ secrets.CPANEL_SSH_PORT }}
           script: |
             cd /home/act/repositories/kpireqruit
             git pull origin master
-            php -v
-            echo "✅ Deployed latest commit to cPanel"
+            echo "Deployed latest commit"

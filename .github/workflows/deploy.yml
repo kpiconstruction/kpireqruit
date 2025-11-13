@@ -1,22 +1,10 @@
-name: Deploy to cPanel
-
-on:
-  push:
-    branches: [ master ]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploy via SSH to VPS
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: 65.254.93.21
-          username: act
-          password: ${{ secrets.CPANEL_SSH_PASSWORD }}
-          port: 22
-          script: |
-            cd /home/act/repositories/kpireqruit
-            git pull origin master
-            echo "Deployed latest commit"
+- name: Deploy via SSH (password)
+  uses: appleboy/ssh-action@v0.1.10
+  with:
+    host: ${{ secrets.CPANEL_HOST }}
+    username: ${{ secrets.CPANEL_USER }}
+    password: ${{ secrets.CPANEL_PASS }}
+    script: |
+      cd /home/act/repositories/kpireqruit
+      git pull origin master
+      echo "✅  Deploy complete"
